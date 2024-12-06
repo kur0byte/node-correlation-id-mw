@@ -47,3 +47,4 @@ npm test
 ## Contributing
 Contributions are welcome! Please open an issue or submit a pull request for any changes.
 
+Made with 🖤 by kur0.
