@@ -1,0 +1,24 @@
+{
+  "name": "correlation-id-mw",
+  "version": "1.0.0",
+  "main": "lib/correlationIdMiddleware.js",
+  "scripts": {
+    "test": "npx jest ./test",
+    "dev": "nodemon example/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "Middleware for handling correlation IDs in Express.js applications",
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "node-mocks-http": "^1.16.1",
+    "nodemon": "^3.1.7"
+  },
+  "files": [
+    "lib"
+  ]
+}
