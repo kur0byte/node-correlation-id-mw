@@ -62,7 +62,7 @@ describe('[ correlationMiddleware (Middleware) ]', () => {
                 correlationMw()(req, res, next);
 
                 expect(correlator.withId).toHaveBeenCalledWith(validUUID, expect.any(Function));
-                expect(res.getHeader('id-hly')).toBe(validUUID);
+                expect(res.getHeader('x-correlation-id')).toBe(validUUID);
                 expect(next).toHaveBeenCalled();
             });
 
@@ -74,7 +74,7 @@ describe('[ correlationMiddleware (Middleware) ]', () => {
                 correlationMw()(req, res, next);
 
                 expect(correlator.withId).toHaveBeenCalledWith(expect.any(Function));
-                expect(res.getHeader('id-hly')).toBe(newUUID);
+                expect(res.getHeader('x-correlation-id')).toBe(newUUID);
                 expect(next).toHaveBeenCalled();
             });
 
@@ -87,14 +87,14 @@ describe('[ correlationMiddleware (Middleware) ]', () => {
                 correlationMw()(req, res, next);
 
                 expect(correlator.withId).toHaveBeenCalledWith(expect.any(Function));
-                expect(res.getHeader('id-hly')).toBe(newUUID);
+                expect(res.getHeader('x-correlation-id')).toBe(newUUID);
                 expect(next).toHaveBeenCalled();
             });
         });
 
         describe('Custom configuration', () => {
             it('should use custom header name when provided in options', () => {
-                const customHeader = 'x-custom-id';
+                const customHeader = 'x-svc-id';
                 req.get = jest.fn().mockReturnValue(validUUID);
                 correlator.getId.mockReturnValue(validUUID);
 

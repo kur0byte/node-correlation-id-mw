@@ -41,7 +41,7 @@ const axiosInstance = axios.create();
 axiosInstance.interceptors.request.use((config) => {
     const correlationId = correlator.getId();
     if (correlationId) {
-        config.headers['id-hly'] = correlationId;
+        config.headers['x-svc-id'] = correlationId;
     }
     return config;
 }, (error) => {

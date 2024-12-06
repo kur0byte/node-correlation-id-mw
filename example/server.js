@@ -4,11 +4,11 @@ const { correlationMw } = require('../lib/correlationIdMiddleware');
 const app = express();
 
 const server = () => {
-    app.use(correlationMw());
+    app.use(correlationMw({header: 'id-svc'}));
     app.get('*', (req, res, next) => {
-        console.log({Request: req.url, CorrelationId: res.get('id-hly')});
+        console.log({Request: req.url, CorrelationId: res.get('id-svc')});
         console.log(`Correlation ID can be accessed within the request handler: ${req.correlationId()}`);
-        console.log(`Correlation ID can be accessed within the response header: ${res.get('id-hly')}`);
+        console.log(`Correlation ID can be accessed within the response header: ${res.get('id-svc')}`);
         
         
         res.on('finish', () => {
