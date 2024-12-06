@@ -28,6 +28,52 @@ This project provides a middleware for Express.js applications to handle correla
     });
     ```
 
+## Correlation ID Propagation to Outbound Requests
+To propagate the correlation ID to outbound requests, you can use a custom Axios instance with an interceptor:
+
+1. **Create a custom Axios instance:**
+```javascript
+const axios = require('axios');
+const { correlator } = require('correlation_id_middleware/lib/correlationIdHelper');
+
+const axiosInstance = axios.create();
+
+axiosInstance.interceptors.request.use((config) => {
+    const correlationId = correlator.getId();
+    if (correlationId) {
+        config.headers['id-hly'] = correlationId;
+    }
+    return config;
+}, (error) => {
+    return Promise.reject(error);
+});
+
+module.exports = axiosInstance;
+```
+2. **Use the custom Axios instance in your application:**
+```javascript
+const express = require('express');
+const { correlationMw } = require('correlation_id_middleware');
+const axiosInstance = require('./customAxiosInstance');
+
+const app = express();
+
+app.use(correlationMw());
+
+app.get('/outbound', async (req, res) => {
+    try {
+        const response = await axiosInstance.get('https://example.com/api');
+        res.send(response.data);
+    } catch (error) {
+        res.status(500).send('Error making outbound request');
+    }
+});
+
+app.listen(3000, () => {
+    console.log('Server started on http://localhost:3000');
+});
+```
+
 ## Example
 1. Run the example server:
 
@@ -46,5 +92,6 @@ npm test
 
 ## Contributing
 Contributions are welcome! Please open an issue or submit a pull request for any changes.
+
 
 Made with 🖤 by kur0.
