@@ -90,6 +90,35 @@ To run the tests, use the following command:
 npm test
 ```
 
+## High level diagram
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Server
+    participant Middleware
+    participant Correlator
+    participant AsyncLocalStorage
+
+    Client->>Server: HTTP Request
+    Server->>Middleware: Use correlationMw
+    Middleware->>Correlator: getId
+    Correlator->>AsyncLocalStorage: getStore
+    AsyncLocalStorage-->>Correlator: Return store
+    Correlator-->>Middleware: Return correlation ID
+    Middleware->>Middleware: Check for header 'x-correlation-id'
+    alt Header 'x-correlation-id' exists
+        Middleware->>Correlator: withId(headerId, next)
+        Correlator->>AsyncLocalStorage: run({ id: headerId }, next)
+        AsyncLocalStorage-->>Correlator: Execute next
+    else Header 'x-correlation-id' does not exist
+        Middleware->>Correlator: withId(next)
+        Correlator->>AsyncLocalStorage: run({ id: randomUUID() }, next)
+        AsyncLocalStorage-->>Correlator: Execute next
+    end
+    Middleware-->>Server: Proceed with request
+    Server->>Client: HTTP Response
+```
+
 ## Contributing
 Contributions are welcome! Please open an issue or submit a pull request for any changes.
 
