@@ -2,6 +2,7 @@
 This project provides a middleware for Express.js applications to handle correlation IDs. It ensures that each request has a unique correlation ID, which can be used for tracking and logging purposes.
 
 ## Installation
+(NOT YET IMPLEMENTED IN NPM)
 1. Install the package:
     ```sh
     npm install correlation_id_middleware
