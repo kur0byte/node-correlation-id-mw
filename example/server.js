@@ -1,15 +1,14 @@
 const express = require('express');
 const { correlationMw } = require('../lib/correlationIdMiddleware');
 
-const app = express();
-
 const server = () => {
-    app.use(correlationMw({header: 'id-svc'}));
+    const app = express();
+    
+    app.use(correlationMw({header: 'id-hly'}));
     app.get('*', (req, res, next) => {
-        console.log({Request: req.url, CorrelationId: res.get('id-svc')});
+        console.log({Request: req.url, CorrelationId: res.get('id-hly')});
         console.log(`Correlation ID can be accessed within the request handler: ${req.correlationId()}`);
-        console.log(`Correlation ID can be accessed within the response header: ${res.get('id-svc')}`);
-        
+        console.log(`Correlation ID can be accessed within the response header: ${res.get('id-hly')}`);
         
         res.on('finish', () => {
             console.log(`ID within finish is ${req.correlationId()}`);
@@ -23,9 +22,24 @@ const server = () => {
         res.status(500).send('Something broke!');
     });
     
-    app.listen(3000, () => {
-        console.log('Server started on http://localhost:3000');
+    const port = process.env.PORT || 3001;
+    const serverInstance = app.listen(port);
+    
+    // Add error handling for server startup
+    serverInstance.on('error', (error) => {
+        if (error.code === 'EADDRINUSE') {
+            console.error(`Port ${port} is already in use. Please try a different port.`);
+        } else {
+            console.error('Server startup error:', error);
+        }
+        process.exit(1);
     });
+    
+    serverInstance.on('listening', () => {
+        console.log(`Server started and running on http://localhost:${port}`);
+    });
+    
+    return serverInstance;
 }
 
 module.exports = { server };
